@@ -2,6 +2,8 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const Tour = require('../../models/tourModel');
+const User = require('../../models/userModel');
+const Review = require('../../models/reviewModel');
 // const tours = require('./tours-simple.json');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
@@ -27,14 +29,18 @@ async function main() {
 main().catch((err) => console.log(err));
 
 // Read Json File;
-const tours = JSON.parse(
-    fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
+const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
+const reviews = JSON.parse(
+    fs.readFileSync(`${__dirname}/reviews.json`, 'utf-8')
 );
 
 //import data nito mongo db
 const importData = async() => {
     try {
-        await Tour.create(tours);
+        await Tour.create(tours, { validateBeforeSave: false });
+        // await User.create(users, { validateBeforeSave: false });
+        // await Review.create(reviews);
         console.log('Data Loaded Successfully');
         process.exit();
     } catch (err) {
@@ -46,6 +52,8 @@ const importData = async() => {
 const deleteData = async() => {
     try {
         await Tour.deleteMany();
+        // await User.deleteMany();
+        // await Review.deleteMany();
         console.log('Data Deleted Successfully');
         process.exit();
     } catch (err) {
